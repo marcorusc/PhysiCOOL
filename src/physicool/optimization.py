@@ -6,7 +6,7 @@ import subprocess
 import logging
 from typing import List, Dict, Optional, Tuple, Union
 from distutils.dir_util import copy_tree, remove_tree
-
+import os
 import numpy as np
 
 from physicool.updaters import ParamsUpdater
@@ -93,6 +93,7 @@ class PhysiCellBlackBox:
     processor: Optional[OutputProcessor] = None
     project_name: str = "project"
     project_command: str = field(init=False)
+    project_config: str = "./config/PhysiCell_settings.xml"
     version: str = NEW_OUTPUTS_VERSION
 
     def __post_init__(self):
@@ -139,6 +140,7 @@ class PhysiCellBlackBox:
         # Run the PhysiCell model for each replicate
         # Create a new directory, run the model and save the files to this
         # location and compute and store the model output metrics
+        print("Starting the replicates")
         for i in range(number_of_replicates):
             if (number_of_replicates > 1) & keep_files:
                 storage_folder = f"temp/replicate{i}"
@@ -146,10 +148,10 @@ class PhysiCellBlackBox:
 
             log_status = f"running project with command {self.project_command}..."
             logging.info(log_status)
-
+            command = self.project_command + " " + self.project_config
             with open(LOG_FILE, "a") as log_file:
                 subprocess.run(
-                    self.project_command,
+                    command,
                     shell=True,
                     stdout=log_file,
                     stderr=subprocess.PIPE,
@@ -159,6 +161,7 @@ class PhysiCellBlackBox:
                 output_metrics.append(self.processor(version=self.version))
 
             if keep_files:
+                #print(os.getcwd())
                 copy_tree("output", storage_folder)
 
         # Delete the files from the "output" folder

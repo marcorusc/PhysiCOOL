@@ -22,6 +22,7 @@ class ConfigFileParser:
     ) -> None:
         if isinstance(path, str):
             path = Path(path)
+            print(path)
 
         self.config_file = path
         self.tree = ElementTree.parse(path)

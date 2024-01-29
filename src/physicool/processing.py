@@ -264,20 +264,18 @@ def get_cell_trajectories(
     if isinstance(output_path, str):
         output_path = Path(output_path)
 
-    variables = ["ID", "position_x", "position_y", "position_z"]
+    variables = ["ID", "position_x", "position_y", "position_z", "cell_type"]
     data = []
     number_of_timepoints = get_cell_file_num(output_path=output_path, version=version)
-
     for i in range(number_of_timepoints):
         cells = get_cell_data(
             timestep=i, variables=variables, output_path=output_path, version=version
         )
         cells["timestep"] = i
         data.append(cells)
-
     new_data = pd.concat(data)
     trajectories = [
-        new_data[new_data["ID"] == cell_id][["position_x", "position_y", "position_z"]]
+        new_data[new_data["ID"] == cell_id][["position_x", "position_y", "position_z", "cell_type"]]
         for cell_id in new_data["ID"].unique()
     ]
 
