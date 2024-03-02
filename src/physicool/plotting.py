@@ -99,29 +99,36 @@ def plot_trajectories_2d(trajectories: pd.DataFrame, ax: Optional[plt.Axes] = No
     ax
       The axes object where the trajectories will be plotted (optional).
     """
-    celltype_colors = {0.0: 0, 1.0: 10, 2.0: 4, 3.0: 6, 4.0: 1}  # map cell types to color indices
-    cmap = plt.cm.get_cmap("tab20")
-    colors = list(cmap.colors)
-    colors[1] = (0.6, 0.2, 0.8)  # replace green with a shade of purple
-    cmap.colors = colors
-
+    celltype_colors = {
+        0.0: [0.5,0.5,0.5],
+        1.0: [1,0,0],
+        2.0: [1,1,0],
+        3.0: [0,0.5,0],
+        4.0: [0,0,1],
+        5.0: [1,0,1]
+    }  
+    
     if ax is None:
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8,8),dpi=600)
+        
     for traj in trajectories:
         cell_type = traj["cell_type"].iloc[0]
         ax.plot(
             traj["position_x"].values,
             traj["position_y"].values,
-            color=plt.cm.tab20(celltype_colors[cell_type]),
+            color=celltype_colors[cell_type],
+            zorder=-1
         )
         cell_type = traj["cell_type"].iloc[-1]
         ax.scatter(
             traj["position_x"].values[-1],
             traj["position_y"].values[-1],
             marker="o",
-            color=plt.cm.tab20(celltype_colors[cell_type]),
+            color=celltype_colors[cell_type],
             label=cell_type,
-        )
+            edgecolors='black',
+            linewidths=0.5
+        ) 
 
     return ax
 
@@ -137,13 +144,18 @@ def plot_trajectories_3d(trajectories: pd.DataFrame, ax: Optional[plt.Axes] = No
     ax
       The axes object where the trajectories will be plotted (optional).
     """
-    celltype_colors = {0.0: 0, 1.0: 10, 2.0: 4, 3.0: 6, 4.0: 1}  # map cell types to color indices
-    cmap = plt.cm.get_cmap("tab20")
-    colors = list(cmap.colors)
-    colors[1] = (0.6, 0.2, 0.8)  # replace green with a shade of purple
-    cmap.colors = colors
+    
+    celltype_colors = {
+        0.0: [0.5,0.5,0.5],
+        1.0: [1,0,0],
+        2.0: [1,1,0],
+        3.0: [0,0.5,0],
+        4.0: [0,0,1],
+        5.0: [1,0,1]
+    }  
+    
     if ax is None:
-        fig = plt.figure()
+        fig = plt.figure(figsize=(8,8),dpi=600)
         ax = fig.add_subplot(projection="3d")
 
     for traj in trajectories:
@@ -152,7 +164,8 @@ def plot_trajectories_3d(trajectories: pd.DataFrame, ax: Optional[plt.Axes] = No
             traj["position_x"].values,
             traj["position_y"].values,
             traj["position_z"].values,
-            color=plt.cm.tab20(celltype_colors[cell_type]),
+            color=celltype_colors[cell_type],
+            zorder=-1
         )
         cell_type = traj["cell_type"].iloc[-1]
         ax.scatter(
@@ -160,8 +173,10 @@ def plot_trajectories_3d(trajectories: pd.DataFrame, ax: Optional[plt.Axes] = No
             traj["position_y"].values[-1],
             traj["position_z"].values[-1],
             marker="o",
-            color=plt.cm.tab20(celltype_colors[cell_type]),
+            color=celltype_colors[cell_type],
             label=cell_type,
+            edgecolors='black',
+            linewidths=0.5
         )
 
     return ax
